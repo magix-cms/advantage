@@ -106,7 +106,7 @@ class database_plugins_advantage{
     {
         $query = 'SELECT adv.* FROM mc_plugins_advantage as adv
                 JOIN mc_lang AS lang ON(adv.idlang = lang.idlang)
-                WHERE lang.iso = :iso';
+                WHERE lang.iso = :iso ORDER BY advorder';
 
         return magixglobal_model_db::layerDB()->select($query,array(
             ':iso'=>$iso
