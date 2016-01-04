@@ -233,6 +233,27 @@ var MC_plugins_advantage = (function ($, undefined) {
                     })
                 }
 
+				$( ".ui-sortable" ).sortable({
+					items: "> tr",
+					placeholder: "ui-state-highlight",
+					cursor: "move",
+					axis: "y",
+					update: function(){
+						var serial = $( ".ui-sortable" ).sortable('serialize');
+						$.nicenotify({
+							ntype: "ajax",
+							uri: '/'+baseadmin+'/plugins.php?name=advantage&getlang='+getlang+'&action=order',
+							typesend: 'post',
+							noticedata : serial,
+							successParams:function(e){
+								$.nicenotify.initbox(e,{
+									display:false
+								});
+							}
+						});
+					}
+				});
+				$( ".ui-sortable" ).disableSelection();
             });
         }
     };

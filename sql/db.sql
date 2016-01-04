@@ -9,5 +9,6 @@ CREATE TABLE IF NOT EXISTS `mc_plugins_advantage` (
   `content` varchar(500) DEFAULT NULL,
   `icon` varchar(80) NOT NULL DEFAULT 'star',
   `url` varchar(200) DEFAULT NULL,
+  `advorder` tinyint(3) unsigned NOT NULL,
   PRIMARY KEY (`idadv`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

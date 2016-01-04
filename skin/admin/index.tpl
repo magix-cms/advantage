@@ -28,7 +28,7 @@
             <th><span class="fa fa-trash-o"></span></th>
         </tr>
         </thead>
-        <tbody id="list_adv">
+        <tbody id="list_adv" class="ui-sortable">
         {if isset($pages) && !empty($pages)}
             {include file="loop/list.tpl" pages=$pages}
         {/if}

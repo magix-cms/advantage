@@ -61,7 +61,7 @@ class plugins_advantage_admin extends DBadvantage{
 	 * Les variables globales
 	 */
 	public $action,$tab,$getlang,$edit,$message;
-	public $title, $icon, $content, $url, $idadv;
+	public $title, $icon, $content, $url, $idadv, $order;
 	public static $notify = array('plugin'=>'true','template'=>'message-advantage.tpl','method'=>'display','assignFetch'=>'notifier');
 
 
@@ -927,6 +927,11 @@ public $icons = array (
 			$this->delete = magixcjquery_form_helpersforms::inputNumeric($_POST['delete']);
 		}
 
+		# ORDER PAGE
+		if(magixcjquery_filter_request::isPost('order')){
+			$this->order = magixcjquery_form_helpersforms::arrayClean($_POST['order']);
+		}
+
 		$this->template = new backend_controller_plugins();
 	}
 
@@ -966,6 +971,8 @@ public $icons = array (
 
 			switch ($type) {
 				case 'add':
+					$c = parent::c_adv($this->getlang);
+					$page['advorder'] = $c['nb'];
 					parent::i_adv($page);
 					break;
 				case 'update':
@@ -982,6 +989,20 @@ public $icons = array (
 	{
 		parent::d_adv($this->delete);
 		$this->notify('delete');
+	}
+
+	/**
+	 * Execute Update AJAX FOR order
+	 * @access private
+	 *
+	 */
+	private function update_order(){
+		if(isset($this->order)){
+			$p = $this->order;
+			for ($i = 0; $i < count($p); $i++) {
+				parent::u_order($i,$p[$i]);
+			}
+		}
 	}
 
 	/**
@@ -1018,6 +1039,9 @@ public $icons = array (
 						if ( isset($this->delete) && is_numeric($this->delete) ) {
 							$this->del();
 						}
+					} elseif ($this->action == 'order' && isset($this->order)) {
+						//var_dump($this->order);
+						$this->update_order();
 					} elseif ($this->action == 'getlist') {
 						$this->template->assign('pages',parent::getLastAdv($this->getlang));
 						$this->template->display('loop/list.tpl');
@@ -1063,7 +1087,7 @@ class DBadvantage{
 	 */
 	protected function getAdv($idlang)
 	{
-		$query = "SELECT idadv as id, title, content, icon, url FROM mc_plugins_advantage WHERE idlang = :idlang";
+		$query = "SELECT idadv as id, title, content, icon, url FROM mc_plugins_advantage WHERE idlang = :idlang ORDER BY advorder";
 
 		return magixglobal_model_db::layerDB()->select($query, array(
 			':idlang' => $idlang
@@ -1117,14 +1141,15 @@ class DBadvantage{
 	 */
 	protected function i_adv($page)
 	{
-		$query = "INSERT INTO mc_plugins_advantage (idlang,title,content,icon,url) VALUES (:idlang,:title,:content,:icon,:url)";
+		$query = "INSERT INTO mc_plugins_advantage (idlang,title,content,icon,url,advorder) VALUES (:idlang,:title,:content,:icon,:url,:advorder)";
 
 		magixglobal_model_db::layerDB()->insert($query,array(
 			':idlang'	=> $page['idlang'],
 			':title'	=> $page['title'],
 			':content'	=> $page['content'],
 			':icon'		=> $page['icon'],
-			':url'		=> $page['url']
+			':url'		=> $page['url'],
+			':advorder'	=> $page['advorder']
 		));
 	}
 
@@ -1151,6 +1176,21 @@ class DBadvantage{
 				':icon'		=> $page['icon'],
 				':url'		=> $page['url']
 		));
+	}
+
+	/**
+	 * Met à jour l'ordre d'affichage des pages
+	 * @param $i
+	 * @param $id
+	 */
+	protected function u_order($i,$id){
+		$sql = 'UPDATE mc_plugins_advantage SET advorder = :i WHERE idadv = :id';
+		magixglobal_model_db::layerDB()->update($sql,
+			array(
+				':i'=>$i,
+				':id'=>$id
+			)
+		);
 	}
 
 	// DELETE
