@@ -972,8 +972,11 @@ public $icons = array (
 			switch ($type) {
 				case 'add':
 					$c = parent::c_adv($this->getlang);
-					$page['advorder'] = $c['nb'];
-					parent::i_adv($page);
+					if ($c != null)
+						$page['advorder'] = $c['nb'];
+					else
+						$page['advorder'] = 0;
+							parent::i_adv($page);
 					break;
 				case 'update':
 					$page['id'] = $this->idadv;
@@ -1025,7 +1028,7 @@ public $icons = array (
 							}
 						} elseif ( isset($this->title) && isset($this->icon) ) {
 							$nb = parent::c_adv($this->getlang);
-							if ($nb['COUNT(idadv)'] < 4) {
+							if ($nb['nb'] < 4) {
 								$this->save('add');
 							} else {
 								$this->notify('limit_reached');
@@ -1128,7 +1131,7 @@ class DBadvantage{
 	 */
 	protected function c_adv($idlang)
 	{
-		$query = "SELECT COUNT(idadv) FROM mc_plugins_advantage WHERE idlang = :idlang";
+		$query = "SELECT COUNT(idadv) as nb FROM mc_plugins_advantage WHERE idlang = :idlang";
 
 		return magixglobal_model_db::layerDB()->selectOne($query, array(
 			':idlang' => $idlang
