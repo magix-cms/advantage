@@ -3,12 +3,12 @@
 --
 
 CREATE TABLE IF NOT EXISTS `mc_plugins_advantage` (
-  `idadv` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
-  `idlang` int(10) unsigned NOT NULL,
+  `idadv` smallint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `idlang` smallint(3) unsigned NOT NULL,
   `title` varchar(130) NOT NULL,
-  `content` varchar(500) DEFAULT NULL,
+  `content` text DEFAULT NULL,
   `icon` varchar(80) NOT NULL DEFAULT 'star',
   `url` varchar(200) DEFAULT NULL,
-  `advorder` tinyint(3) unsigned NOT NULL,
+  `advorder` smallint(3) unsigned NOT NULL default 0,
   PRIMARY KEY (`idadv`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
