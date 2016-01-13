@@ -35,7 +35,7 @@
         {include file="no-entry.tpl" pages=$pages}
         </tbody>
     </table>
-    {include file="form/modal/addPage.tpl"}
+    {include file="form/modal/addpage.tpl"}
     {include file="modal/delete.tpl"}
 {/block}
 {block name='javascript'}
