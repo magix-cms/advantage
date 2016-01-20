@@ -720,7 +720,7 @@ public $icons = array (
 		'stop',
 		'youtube-play'
 	),
-	'$brandIcons' => array(
+	'brandIcons' => array(
 		'500px',
 		'adn',
 		'amazon',
@@ -867,7 +867,7 @@ public $icons = array (
 		'youtube-play',
 		'youtube-square'
 	),
-	'$medicalIcons' => array(
+	'medicalIcons' => array(
 		'ambulance',
 		'h-square',
 		'heart',
