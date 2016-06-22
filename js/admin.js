@@ -65,18 +65,22 @@ var MC_plugins_advantage = (function ($, undefined) {
                 },
                 submitHandler: function(form) {
                     $.nicenotify({
-                        ntype: "submit",
+                        ntype: "ajax",
                         uri: '/'+baseadmin+'/plugins.php?name=advantage&getlang='+getlang+'&action=edit',
-                        typesend: 'post',
-                        idforms: $(form),
-                        resetform: true,
+						typesend: 'post',
+						resetform: true,
+						datatype: 'json',
+						noticedata: $(form).serialize(),
                         successParams:function(data){
                             $(modal).modal('hide');
-                            window.setTimeout(function() { $(".alert-success").alert('close'); }, 4000);
-                            $.nicenotify.initbox(data,{
-                                display:true
-                            });
-                            getAdvantage(baseadmin,getlang);
+							window.setTimeout(function() { $(".alert-success").alert('close'); }, 4000);
+							$.nicenotify.initbox(data.notify,{
+								display:true
+							});
+							if(data.statut && data.result != null) {
+								$('#no-entry').before(data.result);
+								updateList();
+							}
                         }
                     });
                     return false;
@@ -144,7 +148,7 @@ var MC_plugins_advantage = (function ($, undefined) {
                             $.nicenotify.initbox(data,{
                                 display:true
                             });
-                            $('#item_'+$('#delete').val()).remove();
+                            $('#order_'+$('#delete').val()).remove();
                             updateList();
                         }
                     });

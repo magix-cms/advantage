@@ -976,15 +976,23 @@ public $icons = array (
 						$page['advorder'] = $c['nb'];
 					else
 						$page['advorder'] = 0;
-							parent::i_adv($page);
+					parent::i_adv($page);
+					$this->template->assign('pages',parent::getLastAdv($this->getlang));
+					$header= new magixglobal_model_header();
+					$header->head_expires("Mon, 26 Jul 1997 05:00:00 GMT");
+					$header->head_last_modified(gmdate( "D, d M Y H:i:s" ) . "GMT");
+					$header->pragma();
+					$header->cache_control("nocache");
+					$header->getStatus('200');
+					$header->json_header("UTF-8");
+					$this->message->json_post_response(true,'save',self::$notify,$this->template->fetch('loop/list.tpl'));
 					break;
 				case 'update':
 					$page['id'] = $this->idadv;
 					parent::u_adv($page);
+					$this->notify('save');
 					break;
 			}
-
-			$this->notify('save');
 		}
 	}
 
@@ -1031,7 +1039,7 @@ public $icons = array (
 							if ($nb['nb'] < 4) {
 								$this->save('add');
 							} else {
-								$this->notify('limit_reached');
+								$this->message->json_post_response(false,'limit_reached',self::$notify);
 							}
 						} elseif ( isset($this->edit) && is_numeric($this->edit) ) {
 							$this->template->assign('adv',parent::g_adv($this->edit));
