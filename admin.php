@@ -985,7 +985,7 @@ public $icons = array (
 					$header->cache_control("nocache");
 					$header->getStatus('200');
 					$header->json_header("UTF-8");
-					$this->message->json_post_response(true,'save',self::$notify,$this->template->fetch('loop/list.tpl'));
+					$this->message->json_post_response(true,'save',$this->template->fetch('loop/list.tpl'),self::$notify);
 					break;
 				case 'update':
 					$page['id'] = $this->idadv;
