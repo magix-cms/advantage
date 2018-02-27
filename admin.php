@@ -1,4 +1,5 @@
 <?php
+require_once ('db.php');
 /*
  # -- BEGIN LICENSE BLOCK ----------------------------------
  #
@@ -20,14 +21,14 @@
  # but WITHOUT ANY WARRANTY; without even the implied warranty of
  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  # GNU General Public License for more details.
-
+ #
  # You should have received a copy of the GNU General Public License
  # along with this program.  If not, see <http://www.gnu.org/licenses/>.
  #
  # -- END LICENSE BLOCK -----------------------------------
-
+ #
  # DISCLAIMER
-
+ #
  # Do not edit or add to this file if you wish to upgrade MAGIX CMS to newer
  # versions in the future. If you wish to customize MAGIX CMS for your
  # needs please refer to http://www.magix-cms.com for more information.
@@ -43,29 +44,51 @@
  * Author: Salvatore Di Salvo
  * Date: 16-12-15
  * Time: 14:00
- * @name advantage
+ * @name plugins_advantage_admin
  * Le plugin advantage
  */
-class plugins_advantage_admin extends DBadvantage{
-    /**
-	 * 
-	 * @var idadmin
-	 */
-	public $idadmin;
+class plugins_advantage_admin extends plugins_advantage_db {
 	/**
-	 * 
-	 * @var idlang
+	 * @var object
 	 */
-	public $idlang;
+	protected $controller,
+		$data,
+		$template,
+		$message,
+		$plugins,
+		$modelLanguage,
+		$collectionLanguage,
+		$header,
+		$settings,
+		$setting;
+
 	/**
 	 * Les variables globales
+	 * @var integer $edit
+	 * @var string $action
+	 * @var string $tabs
 	 */
-	public $action,$tab,$getlang,$edit,$message;
-	public $title, $icon, $content, $url, $idadv, $order;
-	public static $notify = array('plugin'=>'true','template'=>'message-advantage.tpl','method'=>'display','assignFetch'=>'notifier');
+	public $edit = 0,
+		$action = '',
+		$tabs = '';
 
+	/**
+	 * Les variables plugin
+	 * @var array $adv
+	 * @var integer $id
+	 * @var array $advantage
+	 */
+	public
+		$adv = array(),
+		$id = 0,
+		$advantage = array();
 
-public $icons = array (
+	/**
+	 * Deprecated because hard to maintain up to date
+	 * @deprecated
+	 * @var array
+	 */
+	public $icons = array (
 	'webApplicationIcons' => array(
 		'adjust',
 		'anchor',
@@ -886,333 +909,274 @@ public $icons = array (
 	 * Construct class
 	 */
 	public function __construct(){
-        if(class_exists('backend_model_message')){
-            $this->message = new backend_model_message();
-        }
-        
-        if(magixcjquery_filter_request::isGet('action')){
-            $this->action = magixcjquery_form_helpersforms::inputClean($_GET['action']);
-        }
-        if(magixcjquery_filter_request::isGet('tab')){
-            $this->tab = magixcjquery_form_helpersforms::inputClean($_GET['tab']);
-        }
-        if(magixcjquery_filter_request::isGet('getlang')){
-            $this->getlang = magixcjquery_form_helpersforms::inputNumeric($_GET['getlang']);
-        }
-		if(magixcjquery_filter_request::isGet('edit')){
-            $this->edit = magixcjquery_form_helpersforms::inputNumeric($_GET['edit']);
-        }
+		$this->template = new backend_model_template();
+		$this->plugins = new backend_controller_plugins();
+		$this->message = new component_core_message($this->template);
+		$this->modelLanguage = new backend_model_language($this->template);
+		$this->collectionLanguage = new component_collections_language();
+		$this->data = new backend_model_data($this);
+		$this->settings = new backend_model_setting();
+		$this->setting = $this->settings->getSetting();
+		$this->header = new http_header();
 
-		# ADD PAGE
-		if(magixcjquery_filter_request::isPost('title')){
-			$this->title = magixcjquery_form_helpersforms::inputClean($_POST['title']);
+		$formClean = new form_inputEscape();
+
+		// --- GET
+		if(http_request::isGet('controller')) {
+			$this->controller = $formClean->simpleClean($_GET['controller']);
 		}
-		if(magixcjquery_filter_request::isPost('icon')){
-			$this->icon = magixcjquery_form_helpersforms::inputClean($_POST['icon']);
+		if (http_request::isGet('edit')) {
+			$this->edit = $formClean->numeric($_GET['edit']);
 		}
-		if(magixcjquery_filter_request::isPost('content')){
-			$this->content = magixcjquery_form_helpersforms::inputClean($_POST['content']);
+		if (http_request::isGet('action')) {
+			$this->action = $formClean->simpleClean($_GET['action']);
+		} elseif (http_request::isPost('action')) {
+			$this->action = $formClean->simpleClean($_POST['action']);
 		}
-		if(magixcjquery_filter_request::isPost('url')){
-			$this->url = magixcjquery_form_helpersforms::inputClean($_POST['url']);
+		if (http_request::isGet('tabs')) {
+			$this->tabs = $formClean->simpleClean($_GET['tabs']);
 		}
 
-		# EDIT PAGE
-		if(magixcjquery_filter_request::isPOST('idadv')){
-			$this->idadv = magixcjquery_form_helpersforms::inputNumeric($_POST['idadv']);
+		// --- ADD or EDIT
+		if (http_request::isPost('adv')) {
+			$this->adv = $formClean->arrayClean($_POST['adv']);
+		}
+		if (http_request::isPost('id')) {
+			$this->id = $formClean->simpleClean($_POST['id']);
 		}
 
-		# DELETE PAGE
-		if(magixcjquery_filter_request::isPOST('delete')){
-			$this->delete = magixcjquery_form_helpersforms::inputNumeric($_POST['delete']);
-		}
-
-		# ORDER PAGE
-		if(magixcjquery_filter_request::isPost('order')){
-			$this->order = magixcjquery_form_helpersforms::arrayClean($_POST['order']);
-		}
-
-		$this->template = new backend_controller_plugins();
-	}
-
-	/**
-	 * Retourne le message de notification
-	 * @param $type
-	 */
-	private function notify($type){
-		$this->message->getNotify($type,self::$notify);
-	}
-
-	/**
-	 * @access private
-	 * Installation des tables mysql du plugin
-	 */
-	private function install_table(){
-		if(parent::c_show_table() == 0){
-			$this->template->db_install_table('db.sql', 'request/install.tpl');
-		}else{
-			return true;
+		// --- Order
+		if (http_request::isPost('advantage')) {
+			$this->advantage = $formClean->arrayClean($_POST['advantage']);
 		}
 	}
 
 	/**
-	 *
+	 * Method to override the name of the plugin in the admin menu
+	 * @return string
 	 */
-	public function save($type)
+	public function getExtensionName()
 	{
-		if( !empty($this->title) && !empty($this->icon) ){
-			$page = array(
-				'idlang'	=> $this->getlang,
-				'title' 	=> $this->title,
-				'icon'		=> $this->icon,
-				'content' 	=> ( (isset($this->content) && !empty($this->content))?$this->content:NULL ),
-				'url' 		=> ( (isset($this->url) && !empty($this->url))?$this->url:NULL )
+		return $this->template->getConfigVars('advantage_plugin');
+	}
+
+	/**
+	 * Assign data to the defined variable or return the data
+	 * @param string $type
+	 * @param string|int|null $id
+	 * @param string $context
+	 * @param boolean $assign
+	 * @return mixed
+	 */
+	private function getItems($type, $id = null, $context = null, $assign = true) {
+		return $this->data->getItems($type, $id, $context, $assign);
+	}
+
+	/**
+	 * @param $data
+	 * @return array
+	 */
+	private function setAdvData($data)
+	{
+		$arr = array();
+		foreach ($data as $adv) {
+			if (!array_key_exists($adv['id_adv'], $arr)) {
+				$arr[$adv['id_adv']] = array();
+				$arr[$adv['id_adv']]['id_adv'] = $adv['id_adv'];
+				$arr[$adv['id_adv']]['iconset_adv'] = $adv['iconset_adv'];
+				$arr[$adv['id_adv']]['icon_adv'] = $adv['icon_adv'];
+			}
+
+			$arr[$adv['id_adv']]['content'][$adv['id_lang']] = array(
+				'id_lang' => $adv['id_lang'],
+				'title_adv' => $adv['title_adv'],
+				'desc_adv' => $adv['desc_adv'],
+				'url_adv' => $adv['url_adv'],
+				'blank_adv' => $adv['blank_adv']
 			);
+		}
+		return $arr;
+	}
 
-			switch ($type) {
+	/**
+	 * Insert data
+	 * @param array $config
+	 */
+	private function add($config)
+	{
+		switch ($config['type']) {
+			case 'adv':
+			case 'advContent':
+				parent::insert(
+					array('type' => $config['type']),
+					$config['data']
+				);
+				break;
+		}
+	}
+
+	/**
+	 * Update data
+	 * @param array $config
+	 */
+	private function upd($config)
+	{
+		switch ($config['type']) {
+			case 'adv':
+			case 'advContent':
+				parent::update(
+					array('type' => $config['type']),
+					$config['data']
+				);
+				break;
+		}
+	}
+
+	/**
+	 * Delete a record
+	 * @param $config
+	 */
+	private function del($config)
+	{
+		switch ($config['type']) {
+			case 'adv':
+				parent::delete(
+					array('type' => $config['type']),
+					$config['data']
+				);
+				$this->message->json_post_response(true,'delete',array('id' => $this->id));
+				break;
+		}
+	}
+
+	/**
+	 * Update order
+	 */
+	public function order(){
+		$p = $this->advantage;
+		for ($i = 0; $i < count($p); $i++) {
+			parent::update(
+				array(
+					'type' => 'order'
+				),
+				array(
+					'id_adv'    => $p[$i],
+					'order_adv' => $i
+				)
+			);
+		}
+	}
+
+	/**
+	 * Execute the plugin
+	 */
+	public function run()
+	{
+		if($this->action) {
+			switch ($this->action) {
 				case 'add':
-					$c = parent::c_adv($this->getlang);
-					if ($c != null)
-						$page['advorder'] = $c['nb'];
-					else
-						$page['advorder'] = 0;
-					parent::i_adv($page);
-					$this->template->assign('pages',parent::getLastAdv($this->getlang));
-					$header= new magixglobal_model_header();
-					$header->head_expires("Mon, 26 Jul 1997 05:00:00 GMT");
-					$header->head_last_modified(gmdate( "D, d M Y H:i:s" ) . "GMT");
-					$header->pragma();
-					$header->cache_control("nocache");
-					$header->getStatus('200');
-					$header->json_header("UTF-8");
-					$this->message->json_post_response(true,'save',$this->template->fetch('loop/list.tpl'),self::$notify);
-					break;
-				case 'update':
-					$page['id'] = $this->idadv;
-					parent::u_adv($page);
-					$this->notify('save');
-					break;
-			}
-		}
-	}
+				case 'edit':
+					if(!empty($this->adv)) {
+						$notify = 'update';
 
-	public function del()
-	{
-		parent::d_adv($this->delete);
-		$this->notify('delete');
-	}
+						if (!isset($this->adv['id'])) {
+							$this->add(array(
+								'type' => 'adv',
+								'data' => array(
+									'iconset_adv' => $this->adv['iconset_adv'],
+									'icon_adv' => $this->adv['icon_adv']
+								)
+							));
 
-	/**
-	 * Execute Update AJAX FOR order
-	 * @access private
-	 *
-	 */
-	private function update_order(){
-		if(isset($this->order)){
-			$p = $this->order;
-			for ($i = 0; $i < count($p); $i++) {
-				parent::u_order($i,$p[$i]);
-			}
-		}
-	}
-
-	/**
-	 * Affiche les pages de l'administration du plugin
-	 * @access public
-	 */
-	public function run(){
-		if(self::install_table() == true){
-			if (isset($this->tab) && $this->tab == 'about')
-			{
-				$this->template->display('about.tpl');
-			}
-			elseif (!isset($this->tab) || (isset($this->tab) && $this->tab == 'index'))
-			{
-				if(isset($this->action)) {
-					if ($this->action == 'edit') {
-						if ( isset($this->idadv) && is_numeric($this->idadv) ) {
-							if ( isset($this->title) && isset($this->icon) ) {
-								$this->save('update');
-							}
-						} elseif ( isset($this->title) && isset($this->icon) ) {
-							$nb = parent::c_adv($this->getlang);
-							if ($nb['nb'] < 4) {
-								$this->save('add');
-							} else {
-								$this->message->json_post_response(false,'limit_reached',self::$notify);
-							}
-						} elseif ( isset($this->edit) && is_numeric($this->edit) ) {
-							$this->template->assign('adv',parent::g_adv($this->edit));
-							$this->template->assign('icons',$this->icons);
-							$this->template->display('page/editpage.tpl');
+							$lastAdv = $this->getItems('lastAdv', null,'one',false);
+							$this->adv['id'] = $lastAdv['id_adv'];
+							$notify = 'add_redirect';
 						}
-					} elseif ($this->action == 'delete') {
-						if ( isset($this->delete) && is_numeric($this->delete) ) {
-							$this->del();
+
+						foreach ($this->adv['content'] as $lang => $adv) {
+							$adv['id_lang'] = $lang;
+							$adv['blank_adv'] = (!isset($adv['blank_adv']) ? 0 : 1);
+							$advLang = $this->getItems('advContent',array('id' => $this->adv['id'],'id_lang' => $lang),'one',false);
+
+							if($advLang) {
+								$adv['id'] = $advLang['id_content'];
+							}
+							else {
+								$adv['id_adv'] = $this->adv['id'];
+							}
+
+							$config = array(
+								'type' => 'advContent',
+								'data' => $adv
+							);
+
+							$advLang ? $this->upd($config) : $this->add($config);
 						}
-					} elseif ($this->action == 'order' && isset($this->order)) {
-						//var_dump($this->order);
-						$this->update_order();
-					} elseif ($this->action == 'getlist') {
-						$this->template->assign('pages',parent::getLastAdv($this->getlang));
-						$this->template->display('loop/list.tpl');
-					} elseif ($this->action == 'list') {
-						$this->template->assign('icons',$this->icons);
-						$this->template->assign('pages',parent::getAdv($this->getlang));
-						$this->template->display('index.tpl');
+						$this->message->json_post_response(true,$notify);
 					}
-				}
+					else {
+						$this->modelLanguage->getLanguage();
+
+						if($this->edit) {
+							$collection = $this->getItems('advContent',$this->edit,'all',false);
+							$setEditData = $this->setAdvData($collection);
+							try {
+								$this->template->assign('adv', $setEditData[$this->edit]);
+							} catch(Exception $e) {
+								$logger = new debug_logger(MP_LOG_DIR);
+								$logger->log('php', 'error', 'An error has occured : '.$e->getMessage(), debug_logger::LOG_MONTH);
+							}
+						}
+
+						/*$fontawesome = component_core_system::basePath().PATHADMIN.DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'fonts'.DIRECTORY_SEPARATOR.'fontawesome'.DIRECTORY_SEPARATOR.$this->setting['fav'].DIRECTORY_SEPARATOR.'fontawesome-webfont.ttf';
+						if(file_exists($fontawesome)) {
+							$font = \FontLib\Font::load($fontawesome);
+							$font->parse();
+							print_r($font);
+							echo $font->getFontName();
+						}*/
+
+						try {
+							$this->template->assign('edit',($this->action === 'edit' ? true : false));
+						} catch(Exception $e) {
+							$logger = new debug_logger(MP_LOG_DIR);
+							$logger->log('php', 'error', 'An error has occured : '.$e->getMessage(), debug_logger::LOG_MONTH);
+						}
+						$this->template->display('edit.tpl');
+					}
+					break;
+				case 'delete':
+					if(isset($this->id) && !empty($this->id)) {
+						$this->del(
+							array(
+								'type' => 'adv',
+								'data' => array(
+									'id' => $this->id
+								)
+							)
+						);
+					}
+					break;
+				case 'order':
+					if (isset($this->advantage) && is_array($this->advantage)) {
+						$this->order();
+					}
+					break;
 			}
 		}
-	}
-
-    /**
-     * Set Configuration pour le menu
-     * @return array
-     */
-    public function setConfig(){
-        return array(
-            'url'=> array(
-                'lang'=>'list',
-                'action'=>'list',
-                'name'=>'Points forts'
-            )
-        );
-    }
-}
-class DBadvantage{
-    /**
-	 * Vérifie si les tables du plugin sont installé
-	 * @access protected
-	 * return integer
-	 */
-	protected function c_show_table(){
-		$table = 'mc_plugins_advantage';
-		return magixglobal_model_db::layerDB()->showTable($table);
-	}
-
-	// GET
-	/**
-	 * @param $idlang
-	 * @return array
-	 */
-	protected function getAdv($idlang)
-	{
-		$query = "SELECT idadv as id, title, content, icon, url FROM mc_plugins_advantage WHERE idlang = :idlang ORDER BY advorder";
-
-		return magixglobal_model_db::layerDB()->select($query, array(
-			':idlang' => $idlang
-		));
-	}
-
-	/**
-	 * @return array
-	 */
-	protected function getLastAdv($idlang)
-	{
-		$query = "SELECT idadv as id, title, content, icon, url FROM `mc_plugins_advantage` WHERE idlang = :idlang ORDER BY idadv DESC LIMIT 1";
-
-		return magixglobal_model_db::layerDB()->select($query, array(
-				':idlang' => $idlang
-		));
-	}
-
-	/**
-	 * @param $id
-	 * @return array
-	 */
-	protected function g_adv($id)
-	{
-		$query = "SELECT iso, idadv as id, title, content, icon, url
-				FROM mc_plugins_advantage
-				JOIN mc_lang USING(idlang)
-				WHERE idadv = :id";
-
-		return magixglobal_model_db::layerDB()->selectOne($query, array(
-				':id' => $id
-		));
-	}
-
-	/**
-	 * @param $idlang
-	 * @return array
-	 */
-	protected function c_adv($idlang)
-	{
-		$query = "SELECT COUNT(idadv) as nb FROM mc_plugins_advantage WHERE idlang = :idlang";
-
-		return magixglobal_model_db::layerDB()->selectOne($query, array(
-			':idlang' => $idlang
-		));
-	}
-
-	// INSERT
-	/**
-	 * @param $page
-	 */
-	protected function i_adv($page)
-	{
-		$query = "INSERT INTO mc_plugins_advantage (idlang,title,content,icon,url,advorder) VALUES (:idlang,:title,:content,:icon,:url,:advorder)";
-
-		magixglobal_model_db::layerDB()->insert($query,array(
-			':idlang'	=> $page['idlang'],
-			':title'	=> $page['title'],
-			':content'	=> $page['content'],
-			':icon'		=> $page['icon'],
-			':url'		=> $page['url'],
-			':advorder'	=> $page['advorder']
-		));
-	}
-
-	// UPDATE
-	/**
-	 * @param $page
-	 */
-	protected function u_adv($page)
-	{
-		$query = "UPDATE mc_plugins_advantage
-				  SET
-					idlang = :idlang,
-					title = :title,
-					content = :content,
-					icon = :icon,
-					url = :url
-				  WHERE idadv = :id";
-
-		magixglobal_model_db::layerDB()->insert($query,array(
-				':id'		=> $page['id'],
-				':idlang'	=> $page['idlang'],
-				':title'	=> $page['title'],
-				':content'	=> $page['content'],
-				':icon'		=> $page['icon'],
-				':url'		=> $page['url']
-		));
-	}
-
-	/**
-	 * Met à jour l'ordre d'affichage des pages
-	 * @param $i
-	 * @param $id
-	 */
-	protected function u_order($i,$id){
-		$sql = 'UPDATE mc_plugins_advantage SET advorder = :i WHERE idadv = :id';
-		magixglobal_model_db::layerDB()->update($sql,
-			array(
-				':i'=>$i,
-				':id'=>$id
-			)
-		);
-	}
-
-	// DELETE
-	/**
-	 * @param $id
-	 */
-	protected function d_adv($id)
-	{
-		$query = "DELETE FROM mc_plugins_advantage WHERE idadv = :id";
-
-		magixglobal_model_db::layerDB()->delete($query,array(':id'=>$id));
+		else {
+			$this->modelLanguage->getLanguage();
+			$defaultLanguage = $this->collectionLanguage->fetchData(array('context'=>'one','type'=>'default'));
+			$this->getItems('advs',array('default_lang'=>$defaultLanguage['id_lang']),'all');
+			$assign = array(
+				'id_adv',
+				'icon_adv' => array('title' => 'icon_adv'),
+				'title_adv' => array('title' => 'name'),
+				'desc_adv' => array('title' => 'desc_adv', 'class' => 'fixed-td-lg', 'type' => 'bin', 'input' => null),
+				'url_adv' => array('title' => 'url_adv', 'type' => 'bin', 'input' => null, 'class' => '')
+			);
+			$this->data->getScheme(array('mc_advantage','mc_advantage_content'),array('id_adv','icon_adv','title_adv','desc_adv','url_adv'),$assign);
+			$this->template->display('index.tpl');
+		}
 	}
 }
-?>

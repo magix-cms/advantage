@@ -43,74 +43,64 @@
  * Author: Salvatore Di Salvo
  * Date: 17-12-15
  * Time: 10:38
- * @name advantage
+ * @name plugins_advantage_public
  * Le plugin advantage
  */
-class plugins_advantage_public extends database_plugins_advantage{
+class plugins_advantage_public extends plugins_advantage_db{
     /**
-     * @var frontend_controller_plugins
+     * @var frontend_model_template
      */
-    protected $template;
+    protected $template, $data, $lang;
     /**
      * Class constructor
      */
     public function __construct(){
-        $this->template = new frontend_controller_plugins();
+        $this->template = new frontend_model_template();
+		$this->data = new frontend_model_data($this);
+		$this->lang = $this->template->currentLanguage();
     }
 
-    /**
-     * @return array
-     */
-    public function getAdvs(){
-        $iso = $this->template->getLanguage();
+	/**
+	 * Assign data to the defined variable or return the data
+	 * @param string $type
+	 * @param string|int|null $id
+	 * @param string $context
+	 * @param boolean $assign
+	 * @return mixed
+	 */
+	private function getItems($type, $id = null, $context = null, $assign = true) {
+		return $this->data->getItems($type, $id, $context, $assign);
+	}
 
-        if($iso == null) {
-            $default = parent::getDefaultLang();
-            $iso = $default['iso'];
-        }
+	/**
+	 * @param $data
+	 * @return array
+	 */
+	private function setAdvData($data)
+	{
+		$arr = array();
+		foreach ($data as $adv) {
+				$arr[$adv['id_adv']] = array();
+				$arr[$adv['id_adv']]['id_adv'] = $adv['id_adv'];
+				$arr[$adv['id_adv']]['id_lang'] = $adv['id_lang'];
+				$arr[$adv['id_adv']]['iconset'] = $adv['iconset_adv'];
+				$arr[$adv['id_adv']]['icon'] = $adv['icon_adv'];
+				$arr[$adv['id_adv']]['title'] = $adv['title_adv'];
+				$arr[$adv['id_adv']]['desc'] = $adv['desc_adv'];
+				$arr[$adv['id_adv']]['url'] = $adv['url_adv'];
+				$arr[$adv['id_adv']]['blank'] = $adv['blank_adv'];
+		}
+		return $arr;
+	}
 
-        $advs = parent::g_advs($iso);
-        if($advs != null){
-            return $advs;
-        }
-
-    }
-}
-class database_plugins_advantage{
-    /**
-     * Vérifie si les tables du plugin sont installé
-     * @access protected
-     * return integer
-     */
-    protected function c_show_table(){
-        $table = 'mc_plugins_advantage';
-        return frontend_db_plugins::layerPlugins()->showTable($table);
-    }
-
-    /**
-     * Get the default language
-     * @return array
-     */
-    protected function getDefaultLang()
-    {
-        $query = "SELECT iso FROM mc_lang WHERE default_lang = 1 ";
-
-        return magixglobal_model_db::layerDB()->selectOne($query);
-    }
-
-    /**
-     * @param $iso
-     * @return array
-     */
-    protected function g_advs($iso)
-    {
-        $query = 'SELECT adv.* FROM mc_plugins_advantage as adv
-                JOIN mc_lang AS lang ON(adv.idlang = lang.idlang)
-                WHERE lang.iso = :iso ORDER BY advorder';
-
-        return magixglobal_model_db::layerDB()->select($query,array(
-            ':iso'=>$iso
-        ));
+	/**
+	 * @param array $params
+	 * @return array
+	 */
+    public function getAdvs($params = array()){
+		if(!is_array($params) || empty($params)) {
+			$advs = $this->getItems('homeAdvs',array('lang' => $this->lang),'all', false);
+			return $advs === null ? $advs : $this->setAdvData($advs);
+    	}
     }
 }
-?>

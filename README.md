@@ -1,13 +1,10 @@
 # advantage
-Plugin Advantage for Magix CMS
+Plugin Advantage for Magix CMS 3
 
 Ajouter un ou plusieurs block sur la page d'accueil de votre site internet avec le plugin de mise en avant de vos points forts.
 
-###version 
+![screenshot-2018-2-27 advantage magix cms admin](https://user-images.githubusercontent.com/356674/36724134-88738242-1bb2-11e8-9379-30fd3ba3a5ca.png)
 
-[![release](https://img.shields.io/github/release/magix-cms/advantage.svg)](https://github.com/magix-cms/advantage/releases/latest)
-
-![Plugin Advantage Magix CMS](https://cloud.githubusercontent.com/assets/356674/12450032/886a4f40-bf81-11e5-84cf-20cb19ba4a08.png "Plugin Advantage ou points fort dans Magix CMS")
 
 ## Installation
  * Décompresser l'archive dans le dossier "plugins" de magix cms
@@ -21,7 +18,6 @@ Ajouter un ou plusieurs block sur la page d'accueil de votre site internet avec 
 
 ```smarty
 {block name="main:after"}
-    {include file="home/brick/advantages.tpl" orientation="left" links=true}
-    {include file="home/brick/main-cat.tpl"}
+    {include file="advantage/brick/advantages.tpl" orientation="top"}
 {/block}
 ````

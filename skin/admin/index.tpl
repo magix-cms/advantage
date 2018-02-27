@@ -1,43 +1,50 @@
 {extends file="layout.tpl"}
-{block name='body:id'}plugins-{$pluginName}{/block}
+{block name='head:title'}advantage{/block}
+{block name='body:id'}advantage{/block}
 {block name="styleSheet" append}
     {include file="css.tpl"}
 {/block}
-{block name="article:content"}
-    {include file="nav.tpl"}
-    <!-- Notifications Messages -->
-    <div class="mc-message clearfix"></div>
-    <p id="addbtn">
-        <a class="toggleModal btn btn-primary" data-toggle="modal" data-target="#add-page" href="#">
-            <span class="fa fa-plus"></span>
-            {#add_adv_btn#|ucfirst}
-        </a>
-    </p>
-    <!-- Maintenance Messages -->
-    <p class="col-sm-12 alert alert-info fade in">
-        <span class="fa fa-info-circle"></span> {#limit_adv#|ucfirst}
-    </p>
-    <table class="table table-bordered table-condensed table-hover">
-        <thead>
-        <tr>
-            <th>{#icon_adv#|ucfirst}</th>
-            <th>{#title_adv#|ucfirst}</th>
-            <th>{#content_adv#|ucfirst}</th>
-            <th>{#link_adv#|ucfirst}</th>
-            <th><span class="fa fa-edit"></span></th>
-            <th><span class="fa fa-trash-o"></span></th>
-        </tr>
-        </thead>
-        <tbody id="list_adv" class="ui-sortable">
-        {if isset($pages) && !empty($pages)}
-            {include file="loop/list.tpl" pages=$pages}
-        {/if}
-        {include file="no-entry.tpl" pages=$pages}
-        </tbody>
-    </table>{include file="form/modal/addpage.tpl"}
-
-    {include file="modal/delete.tpl"}
+{block name='article:header'}
+    {if {employee_access type="append" class_name=$cClass} eq 1}
+        <div class="pull-right">
+            <p class="text-right">
+                <a href="{$smarty.server.SCRIPT_NAME}?controller={$smarty.get.controller}&amp;action=add" title="{#add_adv_btn#}" class="btn btn-link">
+                    <span class="fa fa-plus"></span> {#add_adv_btn#|ucfirst}
+                </a>
+            </p>
+        </div>
+    {/if}
+    <h1 class="h2">Advantage</h1>
 {/block}
-{block name='javascript'}
-    {include file="js.tpl"}
+{block name="article:content"}
+    {if {employee_access type="view" class_name=$cClass} eq 1}
+    <div class="panels row">
+        <section class="panel col-ph-12">
+            {if $debug}
+                {$debug}
+            {/if}
+            <header class="panel-header">
+                <h2 class="panel-heading h5">{#root_advantage#}</h2>
+            </header>
+            <div class="panel-body panel-body-form">
+                <div class="mc-message-container clearfix">
+                    <div class="mc-message"></div>
+                </div>
+                {include file="section/form/table-form-2.tpl" idcolumn='id_adv' data=$advs activation=false sortable=false controller="advantage"}
+            </div>
+        </section>
+    </div>
+    {include file="modal/delete.tpl" data_type='address' title={#modal_delete_title#|ucfirst} info_text=true delete_message={#delete_advantage_message#}}
+    {include file="modal/error.tpl"}
+    {else}
+        {include file="section/brick/viewperms.tpl"}
+    {/if}
+{/block}
+
+{block name="foot" append}
+    {capture name="scriptForm"}{strip}
+        /{baseadmin}/min/?f=libjs/vendor/jquery-ui-1.12.min.js,
+        {baseadmin}/template/js/table-form.min.js
+    {/strip}{/capture}
+    {script src=$smarty.capture.scriptForm type="javascript"}
 {/block}

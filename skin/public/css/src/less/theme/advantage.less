@@ -1,0 +1,50 @@
+/*
+ * Rules for advantage
+ */
+/*--------------------------*\
+----- Company advantages -----
+\*--------------------------*/
+
+#advantages {
+	padding: 50px 0 60px;
+	margin-bottom: 30px;
+
+	.media {
+		position: relative;
+		margin-bottom: 40px;
+
+		&-left {
+			padding-right: 15px;
+		}
+		&-right {
+			padding-left: 15px;
+		}
+		&-top {
+			padding-bottom: 15px;
+		}
+		&-bottom {
+			padding-top: 15px;
+		}
+	}
+
+	.media-body {
+		&.icon-top,
+		&.icon-bottom {
+			text-align: center;
+		}
+
+		&.icon-right {
+			text-align: right;
+		}
+	}
+
+	.icon {
+		text-align: center;
+
+		> i,
+		> span {
+			font-size: 3em;
+			color: @main-color;
+		}
+	}
+}
