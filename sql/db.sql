@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS `mc_advantage` (
   `id_adv` smallint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `iconset_adv` enum('fontawesome', 'materials') NOT NULL DEFAULT 'fontawesome',
   `icon_adv` varchar(80) NOT NULL DEFAULT 'star',
   `order_adv` smallint(3) unsigned NOT NULL default 0,
   `date_register` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -11,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `mc_advantage_content` (
   `id_adv` smallint(5) unsigned NOT NULL,
   `id_lang` smallint(3) unsigned NOT NULL,
   `title_adv` varchar(130) NOT NULL,
-  `content_adv` text DEFAULT NULL,
+  `desc_adv` text DEFAULT NULL,
   `url_adv` varchar(200) DEFAULT NULL,
   `blank_adv` smallint(1) unsigned NOT NULL default 0,
   PRIMARY KEY (`id_content`),
