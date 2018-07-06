@@ -1092,6 +1092,16 @@ class plugins_advantage_admin extends plugins_advantage_db {
 							$this->adv['id'] = $lastAdv['id_adv'];
 							$notify = 'add_redirect';
 						}
+						else {
+							$this->upd(array(
+								'type' => 'adv',
+								'data' => array(
+									'id' => $this->adv['id'],
+									'iconset_adv' => $this->adv['iconset_adv'],
+									'icon_adv' => $this->adv['icon_adv']
+								)
+							));
+						}
 
 						foreach ($this->adv['content'] as $lang => $adv) {
 							$adv['id_lang'] = $lang;
