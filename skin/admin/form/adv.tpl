@@ -72,7 +72,7 @@
                                             <textarea class="form-control" id="desc_adv_{$id}" name="adv[content][{$id}][desc_adv]" cols="65" rows="3">{$adv.content[{$id}].desc_adv}</textarea>
                                         </div>
                                         <div class="form-group">
-                                            <label for="url_adv">{#link_adv#|ucfirst}</label>
+                                            <label for="url_adv">{#url_adv#|ucfirst}</label>
                                             <input id="url_adv" class="form-control" type="text" size="150" value="" name="adv[content][{$id}][url_adv]" />
                                         </div>
                                         <div class="form-group">
