@@ -75,7 +75,7 @@ var advantage = (function ($, undefined) {
         if(icon !== '') {
             switch (iconset) {
                 case 'fontawesome':
-                    html = '<i class="fa '+icon+'"></i>';
+                    html = '<i class="'+icon+'"></i>';
                     break;
                 case 'materials':
                     html = '<i class="material-icons">'+icon.replace(' ','_')+'</i>';
@@ -89,10 +89,15 @@ var advantage = (function ($, undefined) {
     return {
         // Fonction Public        
         run: function (baseadmin,getlang) {
-            // Init function
-            $(function(){
-                watch($('#icon_adv'));
+            $('.icon-help').popover({
+                html: true,
+                trigger: 'click',
+                content: function () {
+                    return '<p>'+$(this).data('text')+'</p><p><a href="'+$(this).data('link')+'">'+$(this).data('link')+'</a></p><img src="'+$(this).data('img')+'"/>';
+                }
             });
+
+            watch($('#icon_adv'));
         },
         initShowIcon: function () {
             showIcon();

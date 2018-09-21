@@ -11,10 +11,22 @@
             <div class="form-group col-ph-12 col-sm-6 col-md-4">
                 <label for="icon_adv">
                     {#icon_adv#|ucfirst}&nbsp;*&nbsp;
-                    <a id="fontawesome" href="#" class="text-info additional-fields collapse{if $adv.iconset_adv === 'fontawesome' || !$adv} in{/if}" data-trigger="hover" data-toggle="popover" data-placement="top" data-content="">
+                    <a id="fontawesome" href="#" class="icon-help text-info additional-fields collapse{if $adv.iconset_adv === 'fontawesome' || !$adv} in{/if}"
+                       data-toggle="popover"
+                       data-placement="bottom"
+                       data-title="{#how_to_use#}"
+                       data-text="{#fa_content#}"
+                       data-img="{$url}/plugins/advantage/img/fa-help.jpg"
+                       data-link="https://fontawesome.com/">
                         <span class="fa fa-question-circle"></span>
                     </a>
-                    <a id="materials" href="#" class="text-info additional-fields collapse{if $adv.iconset_adv === 'materials'} in{/if}" data-trigger="hover" data-toggle="popover" data-placement="top" data-content="">
+                    <a id="materials" href="#" class="icon-help text-info additional-fields collapse{if $adv.iconset_adv === 'materials'} in{/if}"
+                       data-toggle="popover"
+                       data-placement="bottom"
+                       data-title="{#how_to_use#}"
+                       data-text="{#mi_content#}"
+                       data-img="{$url}/plugins/advantage/img/mi-help.jpg"
+                       data-link="https://material.io/icons/">
                         <span class="fa fa-question-circle"></span>
                     </a>
                 </label>
@@ -22,7 +34,6 @@
                     <input type="text" class="form-control" id="icon_adv" name="adv[icon_adv]" value="{$adv.icon_adv}" />
                     <span class="input-group-addon" id="icon"></span>
                 </div>
-
                 {*<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     {foreach $icons as $section => $list}
                         <div class="panel panel-default">
