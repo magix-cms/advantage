@@ -84,7 +84,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="url_adv">{#url_adv#|ucfirst}</label>
-                                            <input id="url_adv" class="form-control" type="text" size="150" value="" name="adv[content][{$id}][url_adv]" />
+                                            <input id="url_adv" class="form-control" type="text" size="150" name="adv[content][{$id}][url_adv]" value="{$adv.content[{$id}].url_adv}" />
                                         </div>
                                         <div class="form-group">
                                             <label for="blank_adv_{$id}">{#blank_adv#|ucfirst}</label>

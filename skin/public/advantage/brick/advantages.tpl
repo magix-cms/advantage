@@ -38,7 +38,7 @@
                             {/if}
                             <div class="media-{$orientation} icon">
                                 {if $adv.iconset === 'fontawesome'}
-                                    <span class="fa {$adv.icon}"></span>
+                                    <span class="{$adv.icon}"></span>
                                 {elseif $adv.iconset === 'materials'}
                                     <i class="material-icons">{$adv.icon|replace:' ':'_'}</i>
                                 {/if}
