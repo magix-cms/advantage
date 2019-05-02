@@ -3,36 +3,33 @@
         <div class="row">
             <div class="form-group col-ph-12 col-sm-6 col-md-4">
                 <label for="iconset_adv">{#iconset_adv#|ucfirst} :</label>
-                <select name="adv[iconset_adv]" id="iconset_adv" class="form-control has-optional-fields">
-                    <option value="fontawesome"{if $adv.iconset_adv === 'fontawesome' || !$adv} selected{/if} class="optional-field" data-target="#fontawesome" >FontAwesome</option>
-                    <option value="materials"{if $adv.iconset_adv === 'materials'} selected{/if} class="optional-field" data-target="#materials" >Material Icons</option>
+                <select name="adv[iconset_adv]" id="iconset_adv" class="form-control">
+                    <option value="fontawesome"{if $adv.iconset_adv === 'fontawesome' || !$adv} selected{/if}>FontAwesome</option>
+                    <option value="materials"{if $adv.iconset_adv === 'materials'} selected{/if}>Material Icons</option>
                 </select>
             </div>
             <div class="form-group col-ph-12 col-sm-6 col-md-4">
                 <label for="icon_adv">
                     {#icon_adv#|ucfirst}&nbsp;*&nbsp;
-                    <a id="fontawesome" href="#" class="icon-help text-info additional-fields collapse{if $adv.iconset_adv === 'fontawesome' || !$adv} in{/if}"
+                    <a href="#" class="icon-help text-info"
                        data-toggle="popover"
-                       data-placement="bottom"
-                       data-title="{#how_to_use#}"
-                       data-text="{#fa_content#}"
-                       data-img="{$url}/plugins/advantage/img/fa-help.jpg"
-                       data-link="https://fontawesome.com/">
-                        <span class="fa fa-question-circle"></span>
-                    </a>
-                    <a id="materials" href="#" class="icon-help text-info additional-fields collapse{if $adv.iconset_adv === 'materials'} in{/if}"
-                       data-toggle="popover"
-                       data-placement="bottom"
-                       data-title="{#how_to_use#}"
-                       data-text="{#mi_content#}"
-                       data-img="{$url}/plugins/advantage/img/mi-help.jpg"
-                       data-link="https://material.io/icons/">
+                       data-title="{#how_to_use#}">
                         <span class="fa fa-question-circle"></span>
                     </a>
                 </label>
                 <div class="input-group">
                     <input type="text" class="form-control" id="icon_adv" name="adv[icon_adv]" value="{$adv.icon_adv}" />
                     <span class="input-group-addon" id="icon"></span>
+                </div>
+                <div id="popover-content-fontawesome" class="hide">
+                    <p>{#fa_content#}</p>
+                    <p><a href="https://fontawesome.com/">https://fontawesome.com/</a></p>
+                    <img src="{$url}/plugins/advantage/img/fa-help.jpg" alt="Help using fontawesome icons"/>
+                </div>
+                <div id="popover-content-materials" class="hide">
+                    <p>{#mi_content#}</p>
+                    <p><a href="https://material.io/icons/">https://material.io/icons/</a></p>
+                    <img src="{$url}/plugins/advantage/img/mi-help.jpg" alt="Help using materials icons"/>
                 </div>
                 {*<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     {foreach $icons as $section => $list}

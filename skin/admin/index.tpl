@@ -30,7 +30,7 @@
                 <div class="mc-message-container clearfix">
                     <div class="mc-message"></div>
                 </div>
-                {include file="section/form/table-form-2.tpl" idcolumn='id_adv' data=$advs activation=false sortable=false controller="advantage"}
+                {include file="section/form/table-form-3.tpl" idcolumn='id_adv' data=$advs activation=false sortable=true controller="advantage" change_offset=false}
             </div>
         </section>
     </div>
@@ -47,4 +47,16 @@
         {baseadmin}/template/js/table-form.min.js
     {/strip}{/capture}
     {script src=$smarty.capture.scriptForm type="javascript"}
+    <script type="text/javascript">
+        $(function(){
+            var controller = "{$smarty.server.SCRIPT_NAME}?controller={$smarty.get.controller}";
+            var offset = "{if isset($offset)}{$offset}{else}null{/if}";
+            if (typeof tableForm == "undefined")
+            {
+                console.log("tableForm is not defined");
+            }else{
+                tableForm.run(controller,offset);
+            }
+        });
+    </script>
 {/block}

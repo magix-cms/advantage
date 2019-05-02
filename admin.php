@@ -904,6 +904,7 @@ class plugins_advantage_admin extends plugins_advantage_db {
 		'wheelchair'
 	)
 );
+	public $order;
 
     /**
 	 * Construct class
@@ -946,9 +947,7 @@ class plugins_advantage_admin extends plugins_advantage_db {
 		}
 
 		// --- Order
-		if (http_request::isPost('advantage')) {
-			$this->advantage = $formClean->arrayClean($_POST['advantage']);
-		}
+        if (http_request::isPost('advantage')) $this->order = $formClean->arrayClean($_POST['advantage']);
 	}
 
 	/**
@@ -1053,14 +1052,15 @@ class plugins_advantage_admin extends plugins_advantage_db {
 	 * Update order
 	 */
 	public function order(){
-		$p = $this->advantage;
+	    print 'test';
+		$p = $this->order;
 		for ($i = 0; $i < count($p); $i++) {
 			parent::update(
 				array(
 					'type' => 'order'
 				),
 				array(
-					'id_adv'    => $p[$i],
+					'id'    => $p[$i],
 					'order_adv' => $i
 				)
 			);

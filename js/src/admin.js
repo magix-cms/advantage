@@ -88,13 +88,17 @@ var advantage = (function ($, undefined) {
 
     return {
         // Fonction Public        
-        run: function (baseadmin,getlang) {
-            $('.icon-help').popover({
-                html: true,
-                trigger: 'click',
-                content: function () {
-                    return '<p>'+$(this).data('text')+'</p><p><a href="'+$(this).data('link')+'">'+$(this).data('link')+'</a></p><img src="'+$(this).data('img')+'"/>';
-                }
+        run: function () {
+            $('.icon-help').each(function(){
+                $(this).popover('destroy').popover({
+                    html: true,
+                    placement: 'bottom',
+                    content: function() {
+                        let type = $('#iconset_adv').val();
+                        //return '<p>'+text+'</p><p><a href="'+link+'">'+link+'</a></p><img src="'+img+'"/>';
+                        return $('#popover-content-' + type).html();
+                    }
+                });
             });
 
             watch($('#icon_adv'));
@@ -104,3 +108,7 @@ var advantage = (function ($, undefined) {
         }
     };
 })(jQuery);
+
+$(function(){
+    advantage.run();
+});

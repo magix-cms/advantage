@@ -14,16 +14,20 @@
 				<name>Salvatore Di Salvo</name>
 				<website href="http://www.disalvo-infographiste.be" />
 			</author>
+			<author>
+				<name>Gerits Aurelien</name>
+				<website href="https://www.magix-cms.com" />
+			</author>
 		</authors>
 		<release>
 			<date_create>16/12/2015</date_create>
-			<date_update>12/01/2018</date_update>
-			<version>2.0.0</version>
-			<phase>Beta</phase>
+			<date_update>02/05/2019</date_update>
+			<version>2.0.1</version>
+			<phase>Stable</phase>
 		</release>
 		<support>
-			<ticket href="https://github.com/magix-cms/magixcms/issues"></ticket>
-			<git href="https://github.com/magix-cms/magixcms"></git>
+			<ticket href="https://github.com/magix-cms/advantage/issues"></ticket>
+			<git href="https://github.com/magix-cms/advantage"></git>
 		</support>
 	</data>
 </config>

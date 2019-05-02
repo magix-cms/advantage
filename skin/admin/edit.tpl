@@ -34,7 +34,7 @@
     {/strip}{/capture}
     {script src=$smarty.capture.scriptForm type="javascript"}
 
-    <script type="text/javascript">
+    {*<script type="text/javascript">
         $(function(){
             if (typeof advantage == "undefined")
             {
@@ -43,5 +43,5 @@
                 advantage.run();
             }
         });
-    </script>
+    </script>*}
 {/block}
