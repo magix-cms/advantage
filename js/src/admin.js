@@ -102,10 +102,10 @@ var advantage = (function ($, undefined) {
             });
 
             watch($('#icon_adv'));
-        },
+        }/*,
         initShowIcon: function () {
             showIcon();
-        }
+        }*/
     };
 })(jQuery);
 

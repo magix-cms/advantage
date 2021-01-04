@@ -6,9 +6,10 @@
                 <select name="adv[iconset_adv]" id="iconset_adv" class="form-control">
                     <option value="fontawesome"{if $adv.iconset_adv === 'fontawesome' || !$adv} selected{/if}>FontAwesome</option>
                     <option value="materials"{if $adv.iconset_adv === 'materials'} selected{/if}>Material Icons</option>
+                    <option value="custom"{if $adv.iconset_adv === 'custom'} selected{/if}>Custom</option>
                 </select>
             </div>
-            <div class="form-group col-ph-12 col-sm-6 col-md-4">
+            <div class="form-group col-ph-12 col-sm-6 col-md-6">
                 <label for="icon_adv">
                     {#icon_adv#|ucfirst}&nbsp;*&nbsp;
                     <a href="#" class="icon-help text-info"
@@ -17,10 +18,12 @@
                         <span class="fa fa-question-circle"></span>
                     </a>
                 </label>
-                <div class="input-group">
+                <input type="text" class="form-control" id="icon_adv" name="adv[icon_adv]" value="{$adv.icon_adv}" />
+                {*<div class="input-group">
                     <input type="text" class="form-control" id="icon_adv" name="adv[icon_adv]" value="{$adv.icon_adv}" />
                     <span class="input-group-addon" id="icon"></span>
-                </div>
+                </div>*}
+
                 <div id="popover-content-fontawesome" class="hide">
                     <p>{#fa_content#}</p>
                     <p><a href="https://fontawesome.com/">https://fontawesome.com/</a></p>
@@ -30,6 +33,10 @@
                     <p>{#mi_content#}</p>
                     <p><a href="https://material.io/icons/">https://material.io/icons/</a></p>
                     <img src="{$url}/plugins/advantage/img/mi-help.jpg" alt="Help using materials icons"/>
+                </div>
+                <div id="popover-content-custom" class="hide">
+                    <p>{#cu_content#}</p>
+                    <img src="{$url}/plugins/advantage/img/cu-help.jpg" alt="Help using custom"/>
                 </div>
                 {*<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     {foreach $icons as $section => $list}
