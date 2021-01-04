@@ -36,6 +36,7 @@
                 </div>
                 <div id="popover-content-custom" class="hide">
                     <p>{#cu_content#}</p>
+                    <p><a href="http://icomoon.io/">http://icomoon.io/</a></p>
                     <img src="{$url}/plugins/advantage/img/cu-help.jpg" alt="Help using custom"/>
                 </div>
                 {*<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
