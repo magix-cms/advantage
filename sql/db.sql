@@ -22,6 +22,3 @@ CREATE TABLE IF NOT EXISTS `mc_advantage_content` (
 ALTER TABLE `mc_advantage_content`
   ADD CONSTRAINT `mc_advantage_content_ibfk_2` FOREIGN KEY (`id_lang`) REFERENCES `mc_lang` (`id_lang`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `mc_advantage_content_ibfk_1` FOREIGN KEY (`id_adv`) REFERENCES `mc_advantage` (`id_adv`) ON DELETE CASCADE ON UPDATE CASCADE;
-
-INSERT INTO `mc_admin_access` (`id_role`, `id_module`, `view`, `append`, `edit`, `del`, `action`)
-  SELECT 1, m.id_module, 1, 1, 1, 1, 1 FROM mc_module as m WHERE name = 'advantage';
