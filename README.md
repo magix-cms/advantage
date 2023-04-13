@@ -3,7 +3,7 @@ Plugin Advantage for Magix CMS 3
 
 Ajouter un ou plusieurs block sur la page d'accueil de votre site internet avec le plugin de mise en avant de vos points forts.
 
-![screenshot-2018-2-27 advantage magix cms admin](https://user-images.githubusercontent.com/356674/36724134-88738242-1bb2-11e8-9379-30fd3ba3a5ca.png)
+<img width="691" alt="Advantage admin" src="https://user-images.githubusercontent.com/356674/231793568-ee57d439-f72a-4307-94c0-81b2a0077b64.png">
 
 ## Installation
  * Décompresser l'archive dans le dossier "plugins" de magix cms
@@ -12,7 +12,6 @@ Ajouter un ou plusieurs block sur la page d'accueil de votre site internet avec 
  * Une fois dans le plugin, laisser faire l'auto installation
  * Il ne reste que la configuration du plugin pour correspondre avec vos données.
  * Copier le contenu du dossier **skin/public** dans le dossier de votre skin.
- * Copier le contenu du fichier **public.js** à la fin du fichier **global.js** de votre skin
 
 ### Ajouter dans home.tpl la ligne suivante
 
