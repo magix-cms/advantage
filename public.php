@@ -54,9 +54,10 @@ class plugins_advantage_public extends plugins_advantage_db{
     /**
      * Class constructor
      */
-    public function __construct(){
-        $this->template = new frontend_model_template();
-		$this->data = new frontend_model_data($this);
+    public function __construct(frontend_model_template $t = null)
+    {
+        $this->template = $t instanceof frontend_model_template ? $t : new frontend_model_template();
+        $this->data = new frontend_model_data($this, $this->template);
 		$this->lang = $this->template->currentLanguage();
     }
 
@@ -83,7 +84,6 @@ class plugins_advantage_public extends plugins_advantage_db{
 				$arr[$adv['id_adv']] = array();
 				$arr[$adv['id_adv']]['id_adv'] = $adv['id_adv'];
 				$arr[$adv['id_adv']]['id_lang'] = $adv['id_lang'];
-				$arr[$adv['id_adv']]['iconset'] = $adv['iconset_adv'];
 				$arr[$adv['id_adv']]['icon'] = $adv['icon_adv'];
 				$arr[$adv['id_adv']]['title'] = $adv['title_adv'];
 				$arr[$adv['id_adv']]['desc'] = $adv['desc_adv'];

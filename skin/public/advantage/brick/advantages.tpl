@@ -16,7 +16,7 @@
                 <div class="{$smarty.capture.class}">
                     <div class="media media-{$orientation}">
                         <div class="icon">
-                            {if $adv.iconset === 'materials'}<i class="material-icons">{$adv.icon|replace:' ':'_'}</i>{else}<span class="{$adv.icon}"></span>{/if}
+                            <span class="material-icons {$adv.icon}"></span>
                             <h4>{$adv.title}</h4>
                         </div>
                         <div class="media-body icon-{$orientation}">

@@ -1,22 +1,24 @@
 <?php
 class plugins_advantage_db
 {
-	/**
-	 * @param $config
-	 * @param bool $params
-	 * @return mixed|null
-	 * @throws Exception
-	 */
-	public function fetchData($config, $params = false)
-	{
-		if (!is_array($config)) return '$config must be an array';
+    /**
+     * @var debug_logger $logger
+     */
+    protected debug_logger $logger;
 
-		$sql = '';
+    /**
+     * @param array $config
+     * @param array $params
+     * @return array|bool
+     */
+    public function fetchData(array $config,array $params = []) {
+
+        $dateFormat = new component_format_date();
 
 		if ($config['context'] === 'all') {
 			switch ($config['type']) {
 				case 'advs':
-					$sql = 'SELECT 
+					$query = 'SELECT 
 								ad.id_adv,
 								ad.icon_adv,
 								adc.title_adv,
@@ -29,9 +31,8 @@ class plugins_advantage_db
 							ORDER BY order_adv';
 					break;
 				case 'homeAdvs':
-					$sql = 'SELECT 
+					$query = 'SELECT 
 									ad.id_adv,
-									ad.iconset_adv,
 									ad.icon_adv,
 									adc.title_adv,
 									adc.desc_adv,
@@ -44,91 +45,106 @@ class plugins_advantage_db
 								ORDER BY order_adv';
 					break;
 				case 'adv':
-					$sql = 'SELECT a.*,c.*
+					$query = 'SELECT a.*,c.*
 							FROM mc_advantage AS a
 							JOIN mc_advantage_content AS c USING(id_adv)
 							JOIN mc_lang AS lang ON(c.id_lang = lang.id_lang)
 							WHERE c.id_lang = :default_lang';
 					break;
 				case 'advContent':
-					$sql = 'SELECT a.*,c.*
+					$query = 'SELECT a.*,c.*
 							FROM mc_advantage AS a
 							JOIN mc_advantage_content AS c USING(id_adv)
 							JOIN mc_lang AS lang ON(c.id_lang = lang.id_lang)
 							WHERE c.id_adv = :id';
 					break;
+                default:
+                    return false;
 			}
 
-			return $sql ? component_routing_db::layer()->fetchAll($sql, $params) : null;
-		}
+            try {
+                return component_routing_db::layer()->fetchAll($query, $params);
+            }
+            catch (Exception $e) {
+                if(!isset($this->logger)) $this->logger = new debug_logger(MP_LOG_DIR);
+                $this->logger->log('statement','db',$e->getMessage(),$this->logger::LOG_MONTH);
+            }
+        }
 		elseif ($config['context'] === 'one') {
 			switch ($config['type']) {
 				case 'advContent':
-					$sql = 'SELECT * FROM mc_advantage_content WHERE id_adv = :id AND id_lang = :id_lang';
+					$query = 'SELECT * FROM mc_advantage_content WHERE id_adv = :id AND id_lang = :id_lang';
 					break;
 				case 'lastAdv':
-					$sql = 'SELECT * FROM mc_advantage ORDER BY id_adv DESC LIMIT 0,1';
+					$query = 'SELECT * FROM mc_advantage ORDER BY id_adv DESC LIMIT 0,1';
 					break;
-			}
+                default:
+                    return false;
+            }
 
-			return $sql ? component_routing_db::layer()->fetch($sql, $params) : null;
-		}
+            try {
+                return component_routing_db::layer()->fetch($query, $params);
+            }
+            catch (Exception $e) {
+                if(!isset($this->logger)) $this->logger = new debug_logger(MP_LOG_DIR);
+                $this->logger->log('statement','db',$e->getMessage(),$this->logger::LOG_MONTH);
+            }
+        }
+        return false;
 	}
 
-	/**
-	 * @param $config
-	 * @param array $params
-	 * @return bool|string
-	 */
-	public function insert($config, $params = array())
-	{
-		if (!is_array($config)) return '$config must be an array';
+    /**
+     * @param string $type
+     * @param array $params
+     * @return bool|string
+     */
+    public function insert(string $type, array $params = []) {
+        $query = '';
 
-		$sql = '';
-
-		switch ($config['type']) {
+		switch ($type) {
 			case 'adv':
-				$sql = 'INSERT INTO mc_advantage (iconset_adv, icon_adv, order_adv, date_register)  
-						SELECT :iconset_adv, :icon_adv, COUNT(id_adv), NOW() FROM mc_advantage';
+				$query = 'INSERT INTO mc_advantage (icon_adv, order_adv, date_register)  
+						SELECT :icon_adv, COUNT(id_adv), NOW() FROM mc_advantage';
 				break;
 			case 'advContent':
-				$sql = 'INSERT INTO mc_advantage_content(id_adv, id_lang, title_adv, desc_adv, url_adv, blank_adv)
+				$query = 'INSERT INTO mc_advantage_content(id_adv, id_lang, title_adv, desc_adv, url_adv, blank_adv)
 						VALUES (:id_adv, :id_lang, :title_adv, :desc_adv, :url_adv, :blank_adv)';
-				break;
-		}
+                break;
+            default:
+                return false;
+        }
 
-		if($sql === '') return 'Unknown request asked';
+        if($query === '') return 'Unknown request asked';
 
-		try {
-			component_routing_db::layer()->insert($sql,$params);
-			return true;
-		}
-		catch (Exception $e) {
-			return 'Exception reçue : '.$e->getMessage();
-		}
+        try {
+            component_routing_db::layer()->insert($query,$params);
+            return true;
+        }
+        catch (Exception $e) {
+            if(!isset($this->logger)) $this->logger = new debug_logger(MP_LOG_DIR);
+            $this->logger->log('statement','db',$e->getMessage(),$this->logger::LOG_MONTH);
+        }
+
+        return false;
 	}
 
-	/**
-	 * @param $config
-	 * @param array $params
-	 * @return bool|string
-	 */
-	public function update($config, $params = array())
-	{
-		if (!is_array($config)) return '$config must be an array';
+    /**
+     * @param string $type
+     * @param array $params
+     * @return bool|string
+     */
+    public function update(string $type, array $params = []) {
+        $query = '';
 
-		$sql = '';
-
-		switch ($config['type']) {
+        switch ($type) {
 			case 'adv':
-				$sql = 'UPDATE mc_advantage
+				$query = 'UPDATE mc_advantage
 						SET 
-							iconset_adv = :iconset_adv,
 							icon_adv = :icon_adv
 						WHERE id_adv = :id';
 				break;
 			case 'advContent':
-				$sql = 'UPDATE mc_advantage_content
+				$query = 'UPDATE mc_advantage_content
 						SET 
 							title_adv = :title_adv,
 							desc_adv = :desc_adv,
@@ -138,48 +154,55 @@ class plugins_advantage_db
 						AND id_lang = :id_lang';
 				break;
 			case 'order':
-				$sql = 'UPDATE mc_advantage 
+				$query = 'UPDATE mc_advantage 
 						SET order_adv = :order_adv
 						WHERE id_adv = :id';
 				break;
+            default:
+                return false;
 		}
 
-		if($sql === '') return 'Unknown request asked';
+        if($query === '') return 'Unknown request asked';
 
-		try {
-			component_routing_db::layer()->update($sql,$params);
-			return true;
-		}
-		catch (Exception $e) {
-			return 'Exception reçue : '.$e->getMessage();
-		}
+        try {
+            component_routing_db::layer()->update($query,$params);
+            return true;
+        }
+        catch (Exception $e) {
+            if(!isset($this->logger)) $this->logger = new debug_logger(MP_LOG_DIR);
+            $this->logger->log('statement','db',$e->getMessage(),$this->logger::LOG_MONTH);
+        }
+
+        return false;
 	}
 
-	/**
-	 * @param $config
-	 * @param array $params
-	 * @return bool|string
-	 */
-	public function delete($config, $params = array())
-	{
-		if (!is_array($config)) return '$config must be an array';
-			$sql = '';
+    /**
+     * @param array $config
+     * @param array $params
+     * @return bool|string
+     */
+    public function delete(array $config, array $params = []) {
+        $query = '';
 
-			switch ($config['type']) {
-				case 'adv':
-					$sql = 'DELETE FROM mc_advantage
-							WHERE id_adv = :id';
-					break;
-			}
+        switch ($config['type']) {
+            case 'adv':
+                $query = 'DELETE FROM mc_advantage
+                        WHERE id_adv = :id';
+                break;
+            default:
+                return false;
+        }
 
-		if($sql === '') return 'Unknown request asked';
+		if($query === '') return 'Unknown request asked';
 
 		try {
-			component_routing_db::layer()->delete($sql,$params);
+			component_routing_db::layer()->delete($query,$params);
 			return true;
 		}
 		catch (Exception $e) {
-			return 'Exception reçue : '.$e->getMessage();
+            if(!isset($this->logger)) $this->logger = new debug_logger(MP_LOG_DIR);
+            $this->logger->log('statement','db',$e->getMessage(),$this->logger::LOG_MONTH);
 		}
+        return false;
 	}
 }

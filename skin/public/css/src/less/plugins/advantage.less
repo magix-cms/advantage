@@ -1,6 +1,8 @@
 /*
  * Rules for advantage
  */
+// Compiler options
+@import (reference) "mixins";
 /*--------------------------*\
 ----- Company advantages -----
 \*--------------------------*/
@@ -44,7 +46,7 @@
 		> i,
 		> span {
 			font-size: 3em;
-			color: @main-color;
+			color: var(--main-color);
 		}
 	}
 }

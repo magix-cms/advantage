@@ -1,14 +1,6 @@
 <div class="row">
     <form id="edit_adv" action="{$smarty.server.SCRIPT_NAME}?controller={$smarty.get.controller}&amp;tabs=adv&amp;action={if !$edit}add{else}edit{/if}" method="post" class="validate_form{if !$edit} add_form collapse in{else} edit_form{/if} col-ph-12 col-sm-8 col-md-6">
         <div class="row">
-            <div class="form-group col-ph-12 col-sm-6 col-md-4">
-                <label for="iconset_adv">{#iconset_adv#|ucfirst} :</label>
-                <select name="adv[iconset_adv]" id="iconset_adv" class="form-control">
-                    <option value="fontawesome"{if $adv.iconset_adv === 'fontawesome' || !$adv} selected{/if}>FontAwesome</option>
-                    <option value="materials"{if $adv.iconset_adv === 'materials'} selected{/if}>Material Icons</option>
-                    <option value="custom"{if $adv.iconset_adv === 'custom'} selected{/if}>Custom</option>
-                </select>
-            </div>
             <div class="form-group col-ph-12 col-sm-6 col-md-6">
                 <label for="icon_adv">
                     {#icon_adv#|ucfirst}&nbsp;*&nbsp;
@@ -19,53 +11,12 @@
                     </a>
                 </label>
                 <input type="text" class="form-control" id="icon_adv" name="adv[icon_adv]" value="{$adv.icon_adv}" />
-                {*<div class="input-group">
-                    <input type="text" class="form-control" id="icon_adv" name="adv[icon_adv]" value="{$adv.icon_adv}" />
-                    <span class="input-group-addon" id="icon"></span>
-                </div>*}
 
-                <div id="popover-content-fontawesome" class="hide">
-                    <p>{#fa_content#}</p>
-                    <p><a href="https://fontawesome.com/">https://fontawesome.com/</a></p>
-                    <img src="{$url}/plugins/advantage/img/fa-help.jpg" alt="Help using fontawesome icons"/>
-                </div>
-                <div id="popover-content-materials" class="hide">
-                    <p>{#mi_content#}</p>
-                    <p><a href="https://material.io/icons/">https://material.io/icons/</a></p>
-                    <img src="{$url}/plugins/advantage/img/mi-help.jpg" alt="Help using materials icons"/>
-                </div>
-                <div id="popover-content-custom" class="hide">
+                <div id="popover-content" class="hide">
                     <p>{#cu_content#}</p>
                     <p><a href="http://icomoon.io/">http://icomoon.io/</a></p>
-                    <img src="{$url}/plugins/advantage/img/cu-help.jpg" alt="Help using custom"/>
+                    <img src="{$url}/plugins/advantage/img/cu-help.jpg" alt="Help using"/>
                 </div>
-                {*<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    {foreach $icons as $section => $list}
-                        <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="heading{$list@index +1}">
-                                <h4 class="panel-title">
-                                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse{$list@index +1}" aria-expanded="true" aria-controls="collapse{$list@index +1}">
-                                        {$section}
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapse{$list@index +1}" class="panel-collapse collapse {if $list@first}in{/if}" role="tabpanel" aria-labelledby="heading{$list@index +1}">
-                                <div class="panel-body">
-                                    <ul class="list-unstyled list-inline row">
-                                        {foreach $list as $icon}
-                                            <li class="radio col-xs-1">
-                                                <input type="radio" name="adv[icon_adv]" id="icon_{$icon}" value="{$icon}"/>
-                                                <label for="icon_{$icon}">
-                                                    <span class="fa fa-{$icon}"></span>
-                                                </label>
-                                            </li>
-                                        {/foreach}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    {/foreach}
-                </div>*}
             </div>
         </div>
 

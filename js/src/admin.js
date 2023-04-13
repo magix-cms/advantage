@@ -94,9 +94,8 @@ var advantage = (function ($, undefined) {
                     html: true,
                     placement: 'bottom',
                     content: function() {
-                        let type = $('#iconset_adv').val();
-                        //return '<p>'+text+'</p><p><a href="'+link+'">'+link+'</a></p><img src="'+img+'"/>';
-                        return $('#popover-content-' + type).html();
+                        //let type = $('#iconset_adv').val();
+                        return $('#popover-content').html();
                     }
                 });
             });
