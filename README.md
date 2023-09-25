@@ -3,6 +3,10 @@ Plugin Advantage for Magix CMS 3
 
 Ajouter un ou plusieurs block sur la page d'accueil de votre site internet avec le plugin de mise en avant de vos points forts.
 
+### version
+
+[![release](https://img.shields.io/github/release/magix-cms/advantage.svg)](https://github.com/magix-cms/advantage/releases/latest)
+
 <img width="691" alt="Advantage admin" src="https://user-images.githubusercontent.com/356674/231793568-ee57d439-f72a-4307-94c0-81b2a0077b64.png">
 
 ## Installation
