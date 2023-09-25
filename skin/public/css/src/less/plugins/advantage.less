@@ -9,44 +9,70 @@
 
 #advantages {
 	padding: 50px 0 60px;
-	margin-bottom: 30px;
+	margin: 8rem 0 0 0;
+	.adv{
+		padding: 1rem;
+		//flex: 1 0 0;
 
-	.media {
-		position: relative;
-		margin-bottom: 40px;
+		@media (min-width: .breakpoint(sm)[min]) {
+			flex: 1 0 20%;
+			//border-right: 1px solid var(--main-color);
+			//max-width: 20%;
+		}
+		.media {
+			position: relative;
+			margin-bottom: 1.5rem;
+			display: flex;
+			flex-direction: column;
+			@media (min-width: .breakpoint(sm)[min]) {
+				padding: 0;
+				flex-direction: column;
+				align-items: center;
+				text-align: center;
+			}
+			@media (max-width: .breakpoint(sm)[max]) {
+				.all-hover{
+					//text-indent: unset;
+					overflow: hidden;
+				}
+			}
+			/*&-left {
+				padding-right: 15px;
+			}
+			&-right {
+				padding-left: 15px;
+			}
+			&-top {
+				padding-bottom: 15px;
+			}
+			&-bottom {
+				padding-top: 15px;
+			}*/
+			.media-body {
+				&.icon-top,
+				&.icon-bottom {
+					text-align: center;
+				}
 
-		&-left {
-			padding-right: 15px;
-		}
-		&-right {
-			padding-left: 15px;
-		}
-		&-top {
-			padding-bottom: 15px;
-		}
-		&-bottom {
-			padding-top: 15px;
-		}
-	}
-
-	.media-body {
-		&.icon-top,
-		&.icon-bottom {
-			text-align: center;
-		}
-
-		&.icon-right {
-			text-align: right;
-		}
-	}
-
-	.icon {
-		text-align: center;
-
-		> i,
-		> span {
-			font-size: 3em;
-			color: var(--main-color);
+				&.icon-right {
+					text-align: right;
+				}
+			}
+			.media-title{
+				display: flex;
+				flex-direction: column;
+				@media (max-width: .breakpoint(sm)[max]) {
+					align-items: center;
+				}
+				.icon {
+					//text-align: center;
+					margin-bottom: var(--spacer);
+					> i,
+					> span {
+						font-size: 3em;
+					}
+				}
+			}
 		}
 	}
 }
